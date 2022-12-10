@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const product = require("../models/product.model");
 
 const findAll = async (req, res) => {
@@ -26,6 +27,35 @@ const findOndByName = async (req, res) => {
     });
   }
 }
+
+const update = async (req, res) => {
+  let id = req.params.id;
+  let { nombre, descripcion, precio, img, categoria } = req.body;
+  try {
+    let producto;
+    await product.findByIdAndUpdate(id,
+      { nombre, descripcion, precio, img, categoria }, (err, prod) => {
+        if (err) {
+          console.log(err);
+        }
+        else {
+          producto = prod;
+        }
+      });
+
+    return res.json({
+      msg: "producto guardado",
+      details: producto
+    });
+
+  } catch (e) {
+    return res.json({
+      msg: "error",
+      details: e.message
+    });
+  }
+}
+
 const save = async (req, res) => {
   try {
 
@@ -63,5 +93,6 @@ module.exports = {
   findAll,
   findOndByName,
   save,
-  del
+  del,
+  update
 }
